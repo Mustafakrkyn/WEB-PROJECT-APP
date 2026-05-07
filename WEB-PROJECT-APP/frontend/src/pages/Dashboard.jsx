@@ -1,12 +1,44 @@
-import React from 'react';
+import React from "react";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement
+} from "chart.js";
 
-const Dashboard = () => {
+ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
+
+const Dashboard = ({ data }) => {
+
+  // 📊 toplam ağırlık hesapla
+  const labels = data.map((_, i) => `Day ${i + 1}`);
+
+  const weights = data.map((ex) => {
+    return Number(ex.sets) * Number(ex.reps) * Number(ex.weight);
+  });
+
+  const chartData = {
+    labels: labels.length ? labels : ["No Data"],
+    datasets: [
+      {
+        label: "Total Workout Volume",
+        data: weights.length ? weights : [0],
+        borderColor: "blue",
+        tension: 0.3
+      }
+    ]
+  };
+
   return (
-    <div className="p-4 bg-green-50 rounded-lg border-2 border-green-200">
-      <h2 className="text-xl font-bold text-green-700">Şahin'in Dashboard Alanı</h2>
-      <p>Grafikler burada görünecek.</p>
+    <div className="p-4 bg-white rounded shadow">
+      <h2 className="text-xl font-bold mb-3">Progress Dashboard</h2>
+
+      <Line data={chartData} />
+
     </div>
   );
 };
 
-export default Dashboard; // İŞTE BU SATIR EKSİKTİ!
+export default Dashboard;
