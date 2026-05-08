@@ -1,8 +1,8 @@
 import React from 'react';
 
-const RoutineBuilder = ({ exercises, setExercises }) => {
+const RoutineBuilder = ({ exercises = [], setExercises }) => {
 
-  // ➕ ekle
+  // ➕ Yeni Egzersiz Ekle
   const addExercise = () => {
     setExercises([
       ...exercises,
@@ -10,79 +10,79 @@ const RoutineBuilder = ({ exercises, setExercises }) => {
     ]);
   };
 
-  // ✏️ değiştir
+  // ✏️ Bilgileri Güncelle
   const handleChange = (index, field, value) => {
     const updated = [...exercises];
     updated[index][field] = value;
     setExercises(updated);
   };
 
-  // 🗑️ sil
+  // 🗑️ Egzersizi Sil
   const deleteExercise = (index) => {
     const updated = exercises.filter((_, i) => i !== index);
     setExercises(updated);
   };
 
-  // 📊 total volume
-  const totalVolume = exercises.reduce((sum, ex) => {
-    return sum + (Number(ex.sets) * Number(ex.reps) * Number(ex.weight));
+  // 📊 Toplam Hacim Hesapla (Güvenli Hale Getirildi)
+  const totalVolume = (exercises || []).reduce((sum, ex) => {
+    const volume = Number(ex.sets) * Number(ex.reps) * Number(ex.weight);
+    return sum + (isNaN(volume) ? 0 : volume);
   }, 0);
 
   return (
-    <div className="p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
-
-      <h2 className="text-xl font-bold text-blue-700">
-        Mert'in Antrenman Alanı
+    <div className="p-4 bg-blue-50 rounded-lg border-2 border-blue-200 mt-4">
+      <h2 className="text-xl font-bold text-blue-700 mb-2">
+        Mert'in Antrenman Planlayıcısı
       </h2>
 
-      <p>Total Volume: {totalVolume}</p>
+      <div className="mb-4 p-2 bg-blue-100 rounded font-bold text-blue-800">
+        Toplam Kaldırılan Yük: {totalVolume} kg
+      </div>
 
       {exercises.map((ex, index) => (
-        <div key={index} className="flex gap-2 my-2">
-
+        <div key={index} className="flex flex-wrap gap-2 my-2 p-2 bg-white rounded shadow-sm border border-blue-100">
           <input
-            placeholder="Name"
+            className="border p-1 rounded flex-1 min-w-[120px]"
+            placeholder="Egzersiz Adı"
             value={ex.name}
-            onChange={(e) =>
-              handleChange(index, "name", e.target.value)
-            }
+            onChange={(e) => handleChange(index, "name", e.target.value)}
           />
-
           <input
-            placeholder="Sets"
+            className="border p-1 rounded w-20"
+            placeholder="Set"
+            type="number"
             value={ex.sets}
-            onChange={(e) =>
-              handleChange(index, "sets", e.target.value)
-            }
+            onChange={(e) => handleChange(index, "sets", e.target.value)}
           />
-
           <input
-            placeholder="Reps"
+            className="border p-1 rounded w-20"
+            placeholder="Tekrar"
+            type="number"
             value={ex.reps}
-            onChange={(e) =>
-              handleChange(index, "reps", e.target.value)
-            }
+            onChange={(e) => handleChange(index, "reps", e.target.value)}
           />
-
           <input
-            placeholder="Weight"
+            className="border p-1 rounded w-20"
+            placeholder="Kilo"
+            type="number"
             value={ex.weight}
-            onChange={(e) =>
-              handleChange(index, "weight", e.target.value)
-            }
+            onChange={(e) => handleChange(index, "weight", e.target.value)}
           />
-
-          <button onClick={() => deleteExercise(index)}>
+          <button 
+            onClick={() => deleteExercise(index)}
+            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+          >
             X
           </button>
-
         </div>
       ))}
 
-      <button onClick={addExercise} className="mt-2 px-3 py-1 bg-blue-600 text-white rounded">
-        + Add Exercise
+      <button 
+        onClick={addExercise} 
+        className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+      >
+        + Egzersiz Ekle
       </button>
-
     </div>
   );
 };
