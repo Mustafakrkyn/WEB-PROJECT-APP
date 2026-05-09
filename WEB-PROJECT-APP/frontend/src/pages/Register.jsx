@@ -1,41 +1,45 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Register = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-    const res = await fetch('http://localhost:5000/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    
-    if (res.ok) {
-      alert("Kayıt başarılı! Şimdi giriş yapabilirsin.");
-      navigate('/login'); // Kayıt olunca giriş sayfasına atar
-    } else {
-      const data = await res.json();
-      alert(data.error || "Kayıt sırasında hata oluştu.");
-    }
+    // Gerçek bir uygulamada burada API isteği atılır.
+    // Biz şu an ismi yerel hafızaya kaydediyoruz.
+    localStorage.setItem('username', name);
+    alert(`Hoş geldin ${name}! Hesabın başarıyla oluşturuldu.`);
+    navigate('/');
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleRegister} className="p-8 bg-white rounded shadow-md w-96 border-t-4 border-green-500">
-        <h2 className="text-2xl font-bold mb-6 text-center text-green-600">Yeni Üyelik Oluştur</h2>
-        <input className="w-full p-2 mb-4 border rounded" placeholder="Kullanıcı Adı" onChange={(e) => setUsername(e.target.value)} required />
-        <input className="w-full p-2 mb-4 border rounded" type="password" placeholder="Şifre" onChange={(e) => setPassword(e.target.value)} required />
-        <button className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700 font-bold transition-colors">Kayıt Ol</button>
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Zaten hesabın var mı? <span onClick={() => navigate('/login')} className="text-blue-600 cursor-pointer">Giriş Yap</span>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4">
+      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-[2.5rem] shadow-2xl">
+        <h2 className="text-3xl font-black text-center text-slate-900 uppercase">Aramıza Katıl</h2>
+        <form onSubmit={handleRegister} className="mt-8 space-y-6">
+          <input 
+            required
+            type="text" 
+            placeholder="Adınız ve Soyadınız" 
+            className="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-blue-500"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <input required type="email" placeholder="E-posta" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" />
+          <input required type="password" placeholder="Şifre" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" />
+          
+          <button type="submit" className="w-full bg-blue-600 text-white p-4 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all">
+            Hesap Oluştur
+          </button>
+        </form>
+        <p className="text-center text-sm">
+          Zaten hesabınız var mı? <Link to="/login" className="text-blue-600 font-bold">Giriş Yap</Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 };
 
-export default Register;
+export default Register;  
